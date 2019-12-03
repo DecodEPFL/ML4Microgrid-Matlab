@@ -1,5 +1,6 @@
 function P = fg(Vg, Vl, Pg, Y)
 % Power constraint on generators
-P = Vg .* (Y(1:2, 1:2) * Vg) + Vg .* (Y(1:2, 3:4) * Vl) - Pg;
+n_gens = length(Vg);
+P = Vg .* (Y(1:n_gens, 1:n_gens) * Vg) + Vg .* (Y(1:n_gens, n_gens+1:end) * Vl) - Pg;
 end
 
