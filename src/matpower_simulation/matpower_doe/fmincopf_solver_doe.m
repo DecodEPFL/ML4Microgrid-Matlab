@@ -172,12 +172,34 @@ end
 % fmoptions = optimset(fmoptions, 'Diagnostics', 'on');
 
 %%-----  run opf  -----
-% f_fcn = @(x)opf_costfcn(x, om);
+f_best = 1000;
 f_fcn = @(x) target_doe(x, nb, Z_doe, Q_doe);
-gh_fcn = @(x)opf_consfcn(x, om, Ybus, Yf(il,:), Yt(il,:), mpopt, il);
-[x, f, info, Output, Lambda] = ...
-  fmincon(f_fcn, x0, Af, bf, Afeq, bfeq, xmin, xmax, gh_fcn, fmoptions);
+gh_fcn = @(x) opf_consfcn(x, om, Ybus, Yf(il,:), Yt(il,:), mpopt, il);
+for t = 1:10
+    x0_t(:, t) = x0;
+    x0_t(nb+1:2*nb, t) = xmin(nb+1:2*nb) + (xmax(nb+1:2*nb) - xmin(nb+1:2*nb)) .* rand([nb 1]);
+    [x_t(:, t), f_t(:, t), info, Output, Lambda] = ...
+           fmincon(f_fcn, x0_t(:, t), Af, bf, Afeq, bfeq, xmin, xmax, gh_fcn, fmoptions);
+    if f_t(:, t) < f_best
+        f_best = f_t(:, t);
+        x_best = x_t(:, t);
+        info_best = info;
+        output_best = Output;
+        lambda_best = Lambda;
+    end
+end
+x = x_best;
+f = f_best;
+info = info_best;
+Output = output_best;
+Lambda = lambda_best;
 success = (info > 0);
+% % f_fcn = @(x)opf_costfcn(x, om);
+% f_fcn = @(x) target_doe(x, nb, Z_doe, Q_doe);
+% gh_fcn = @(x) opf_consfcn(x, om, Ybus, Yf(il,:), Yt(il,:), mpopt, il);
+% [x, f, info, Output, Lambda] = ...
+%   fmincon(f_fcn, x0, Af, bf, Afeq, bfeq, xmin, xmax, gh_fcn, fmoptions);
+% success = (info > 0);
 
 %% update solution data
 if mpopt.opf.v_cartesian

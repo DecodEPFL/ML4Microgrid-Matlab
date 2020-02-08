@@ -83,9 +83,6 @@ else
   %% run specific AC OPF solver
   switch alg
     case 'FMINCON'
-      if ~have_fcn('fmincon')
-        error('opf_execute: MPOPT.opf.ac.solver = ''%s'' requires FMINCON (Optimization Toolbox 2.x or later)', alg);
-      end
       [results, success, raw] = fmincopf_solver_doe(om, mpopt, Z_doe, Q_doe);
     otherwise
       error('opf_execute: MPOPT.opf.ac.solver = ''%s'' is not a valid AC OPF solver selection', alg);
