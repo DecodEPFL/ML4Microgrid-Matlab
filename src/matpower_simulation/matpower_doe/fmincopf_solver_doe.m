@@ -175,7 +175,7 @@ end
 f_best = 1000;
 f_fcn = @(x) target_doe(x, nb, Z_doe, Q_doe);
 gh_fcn = @(x) opf_consfcn(x, om, Ybus, Yf(il,:), Yt(il,:), mpopt, il);
-for t = 1:10
+for t = 1:25
     x0_t(:, t) = x0;
     x0_t(nb+1:2*nb, t) = xmin(nb+1:2*nb) + (xmax(nb+1:2*nb) - xmin(nb+1:2*nb)) .* rand([nb 1]);
     [x_t(:, t), f_t(:, t), info, Output, Lambda] = ...
