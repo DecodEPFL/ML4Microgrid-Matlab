@@ -172,7 +172,7 @@ end
 % fmoptions = optimset(fmoptions, 'Diagnostics', 'on');
 
 %%-----  run opf  -----
-f_best = 1000;
+f_best = inf;
 f_fcn = @(x) target_doe(x, nb, Z_doe, Q_doe);
 gh_fcn = @(x) opf_consfcn(x, om, Ybus, Yf(il,:), Yt(il,:), mpopt, il);
 for t = 1:25
